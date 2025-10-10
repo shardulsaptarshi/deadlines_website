@@ -1,0 +1,750 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #FFFFFF;
+    --primary-hover: #E5E5E5;
+    --accent-color: #0A84FF;
+    --danger-color: #FF453A;
+    --success-color: #32D74B;
+    --warning-color: #FF9F0A;
+    --background: #000000;
+    --surface: #1C1C1E;
+    --surface-elevated: #2C2C2E;
+    --text-primary: #FFFFFF;
+    --text-secondary: #8E8E93;
+    --border-color: #38383A;
+    --shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 24px 0 rgba(0, 0, 0, 0.7);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* Authentication Page */
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--background);
+}
+
+.auth-container {
+    background: var(--surface);
+    padding: 60px 50px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid var(--border-color);
+}
+
+.auth-container h1 {
+    margin-bottom: 10px;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+}
+
+.auth-container p {
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-size: 15px;
+    font-weight: 400;
+}
+
+#authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#passwordInput {
+    padding: 16px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 16px;
+    text-align: center;
+    font-family: inherit;
+    background: var(--background);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+#passwordInput:focus {
+    outline: none;
+    border-color: var(--text-primary);
+    background: var(--surface-elevated);
+}
+
+.auth-error {
+    color: var(--danger-color);
+    font-size: 13px;
+    margin: 0;
+    min-height: 20px;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+header h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -1px;
+}
+
+/* Buttons */
+.btn-primary, .btn-secondary {
+    padding: 11px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: -0.2px;
+}
+
+.btn-primary {
+    background: var(--text-primary);
+    color: var(--background);
+}
+
+.btn-primary:hover {
+    background: var(--text-secondary);
+    transform: scale(0.98);
+}
+
+.btn-primary:active {
+    transform: scale(0.96);
+}
+
+.btn-secondary {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--surface);
+    border-color: var(--text-secondary);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: var(--text-primary);
+    padding: 11px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: -0.2px;
+}
+
+.btn-danger:hover {
+    background: #FF6961;
+    transform: scale(0.98);
+}
+
+.btn-danger:active {
+    transform: scale(0.96);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: -0.2px;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Deadlines List */
+.deadlines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.deadline-card {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: visible;
+}
+
+.deadline-card:hover {
+    border-color: var(--text-secondary);
+    transform: translateY(-1px);
+}
+
+.deadline-card.overdue {
+    border-left: 3px solid var(--danger-color);
+}
+
+.deadline-card.today {
+    border-left: 3px solid var(--warning-color);
+}
+
+.deadline-card.upcoming {
+    border-left: 3px solid var(--text-secondary);
+}
+
+/* Time Slider */
+.time-slider {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--border-color);
+    border-radius: 0 0 14px 14px;
+    overflow: hidden;
+}
+
+.time-slider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--slider-position, 0%);
+    background: var(--slider-color);
+    transition: width 0.3s ease;
+}
+
+.deadline-card.overdue .time-slider::before {
+    background: var(--danger-color);
+}
+
+.deadline-card.today .time-slider::before {
+    background: var(--warning-color);
+}
+
+.deadline-card.upcoming .time-slider::before {
+    background: var(--text-secondary);
+}
+
+.deadline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.deadline-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.deadline-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-color);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+}
+
+.icon-btn:hover {
+    background: var(--background);
+    transform: scale(0.98);
+}
+
+.delete-btn {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.delete-btn:hover {
+    background: var(--danger-color);
+    color: var(--text-primary);
+}
+
+.edit-btn {
+    color: var(--text-secondary);
+}
+
+.edit-btn:hover {
+    color: var(--text-primary);
+}
+
+.deadline-description {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.deadline-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.deadline-date {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: -0.2px;
+}
+
+.date-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.badge-overdue {
+    background: rgba(255, 69, 58, 0.15);
+    color: var(--danger-color);
+}
+
+.badge-today {
+    background: rgba(255, 159, 10, 0.15);
+    color: var(--warning-color);
+}
+
+.badge-upcoming {
+    background: rgba(142, 142, 147, 0.15);
+    color: var(--text-secondary);
+}
+
+.loading, .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-state {
+    font-size: 16px;
+}
+
+/* Tomorrow Planner */
+.tomorrow-container {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 20px;
+    align-items: start;
+}
+
+.tomorrow-notes {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+}
+
+.tomorrow-notes h2 {
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    font-size: 20px;
+}
+
+.selected-deadlines {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selected-deadline-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    background: var(--background);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+    font-size: 14px;
+}
+
+.selected-deadline-item.overdue {
+    border-left-color: var(--danger-color);
+}
+
+.selected-deadline-item.today {
+    border-left-color: var(--warning-color);
+}
+
+.selected-deadline-title {
+    flex: 1;
+    font-weight: 500;
+}
+
+.remove-deadline-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 5px;
+    transition: color 0.2s;
+}
+
+.remove-deadline-btn:hover {
+    color: var(--danger-color);
+}
+
+#tomorrowPlan {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+
+#tomorrowPlan:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+#tomorrowPlan:disabled {
+    background: var(--background);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.plan-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.plan-action-right {
+    display: flex;
+    gap: 10px;
+}
+
+.available-deadlines {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.available-deadlines h3 {
+    margin-bottom: 15px;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.selectable-deadlines {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selectable-deadline {
+    padding: 12px 15px;
+    background: var(--background);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.selectable-deadline:hover {
+    background: #E5E7EB;
+    transform: translateX(-3px);
+}
+
+.selectable-deadline.selected {
+    background: #DBEAFE;
+    border-left-color: var(--primary-color);
+    opacity: 0.6;
+}
+
+.selectable-deadline.overdue {
+    border-left-color: var(--danger-color);
+}
+
+.selectable-deadline.today {
+    border-left-color: var(--warning-color);
+}
+
+.selectable-deadline-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.selectable-deadline-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.empty-selection {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    animation: fadeIn 0.2s;
+}
+
+.modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: var(--surface);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 32px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+}
+
+/* Form */
+form {
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 14px;
+    letter-spacing: -0.2px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--background);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--text-primary);
+    background: var(--surface-elevated);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .tomorrow-container {
+        grid-template-columns: 1fr;
+    }
+
+    .available-deadlines {
+        max-height: 400px;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    #addDeadlineBtn {
+        width: 100%;
+    }
+
+    .deadline-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .deadline-actions {
+        justify-content: flex-end;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+
+    form {
+        padding: 20px;
+    }
+
+    .modal-header {
+        padding: 20px;
+    }
+
+    .tomorrow-notes {
+        padding: 20px;
+    }
+
+    .available-deadlines {
+        padding: 20px;
+    }
+}
