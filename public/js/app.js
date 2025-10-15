@@ -87,9 +87,9 @@ function openModal(deadline = null) {
         document.getElementById('title').value = deadline.title;
         document.getElementById('description').value = deadline.description || '';
 
-        // Format date for input
-        const dueDate = new Date(deadline.dueDate);
-        document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+        // Format date for input - use the date string directly
+        const dateStr = deadline.dueDate.split('T')[0];
+        document.getElementById('dueDate').value = dateStr;
         document.getElementById('dueTime').value = deadline.dueTime || '';
     } else {
         modalTitle.textContent = 'Add Deadline';
@@ -221,7 +221,9 @@ function renderDeadlines() {
         const { statusClass, statusText } = getDeadlineStatus(deadline.dueDate);
         const sliderPosition = calculateSliderPosition(deadline.dueDate, deadline.createdAt);
 
-        const dueDate = new Date(deadline.dueDate);
+        // Parse date properly - handle both date strings with and without time
+        const dateOnly = deadline.dueDate.split('T')[0];
+        const dueDate = new Date(dateOnly + 'T12:00:00'); // Use noon to avoid timezone issues
         const dateStr = dueDate.toLocaleDateString('en-US', {
             weekday: 'short',
             month: 'short',
@@ -233,7 +235,8 @@ function renderDeadlines() {
             ` at ${formatTime(deadline.dueTime)}` : '';
 
         return `
-            <div class="deadline-card ${statusClass}" style="--slider-position: ${sliderPosition}%;">
+            <div class="deadline-card swipeable ${statusClass}" style="--slider-position: ${sliderPosition}%;" data-deadline-id="${deadline._id}">
+                <div class="swipe-action" onclick="confirmDeleteDeadline('${deadline._id}')">Delete</div>
                 <div class="time-slider"></div>
                 <div class="deadline-header">
                     <h3 class="deadline-title">${escapeHtml(deadline.title)}</h3>
@@ -256,18 +259,28 @@ function renderDeadlines() {
             </div>
         `;
     }).join('');
+
+    // Initialize swipe handlers after rendering
+    setTimeout(initSwipeHandlers, 100);
 }
 
 // Get deadline status (overdue, today, upcoming)
 function getDeadlineStatus(dueDate) {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    // Get today's date as string in YYYY-MM-DD format
+    const today = new Date();
+    const todayStr = today.getFullYear() + '-' +
+                     String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                     String(today.getDate()).padStart(2, '0');
 
-    const due = new Date(dueDate);
-    due.setHours(0, 0, 0, 0);
+    // Get deadline date as string
+    const dueDateStr = dueDate.split('T')[0];
+
+    // Compare dates as strings
+    const now = new Date(todayStr);
+    const due = new Date(dueDateStr);
 
     const diffTime = due - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) {
         return { statusClass: 'overdue', statusText: 'Overdue' };
@@ -376,7 +389,8 @@ function renderSelectedDeadlines() {
         const { statusClass } = getDeadlineStatus(deadline.dueDate);
 
         return `
-            <div class="selected-deadline-item ${statusClass}">
+            <div class="selected-deadline-item swipeable ${statusClass}" data-plan-deadline-id="${deadline._id}">
+                <div class="swipe-action-complete" onclick="markDeadlineComplete('${deadline._id}')">Done</div>
                 <span class="selected-deadline-title">${escapeHtml(deadline.title)}</span>
                 <button class="remove-deadline-btn" onclick="removeDeadlineFromPlan('${deadline._id}')" title="Remove">
                     ✕
@@ -384,9 +398,31 @@ function renderSelectedDeadlines() {
             </div>
         `;
     }).join('');
+
+    // Initialize swipe handlers after rendering
+    setTimeout(initSwipeHandlers, 100);
 }
 
-window.toggleDeadlineSelection = function(deadlineId) {
+// Auto-save helper function
+async function autoSaveDayPlan() {
+    try {
+        const content = tomorrowPlanTextarea.value;
+        await fetch(`${API_URL}/api/planner/tomorrow`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                content,
+                selectedDeadlines: selectedDeadlineIds
+            })
+        });
+    } catch (error) {
+        console.error('Error auto-saving day plan:', error);
+    }
+}
+
+window.toggleDeadlineSelection = async function(deadlineId) {
     const index = selectedDeadlineIds.indexOf(deadlineId);
 
     if (index === -1) {
@@ -399,14 +435,16 @@ window.toggleDeadlineSelection = function(deadlineId) {
 
     renderAvailableDeadlines();
     renderSelectedDeadlines();
+    await autoSaveDayPlan();
 };
 
-window.removeDeadlineFromPlan = function(deadlineId) {
+window.removeDeadlineFromPlan = async function(deadlineId) {
     const index = selectedDeadlineIds.indexOf(deadlineId);
     if (index !== -1) {
         selectedDeadlineIds.splice(index, 1);
         renderAvailableDeadlines();
         renderSelectedDeadlines();
+        await autoSaveDayPlan();
     }
 };
 
@@ -457,8 +495,8 @@ editPlanBtn.addEventListener('click', () => {
     saveTomorrowBtn.style.display = 'inline-block';
 });
 
-// Clear Plan - With confirmation
-clearPlanBtn.addEventListener('click', () => {
+// Clear Plan - With confirmation and delete from database
+clearPlanBtn.addEventListener('click', async () => {
     if (confirm('Are you sure you want to clear the plan? This will remove all selected deadlines and notes.')) {
         // Clear everything
         selectedDeadlineIds = [];
@@ -470,11 +508,103 @@ clearPlanBtn.addEventListener('click', () => {
         editPlanBtn.style.display = 'none';
         saveTomorrowBtn.style.display = 'inline-block';
 
+        // Delete from database
+        await autoSaveDayPlan();
+
         // Re-render
         renderAvailableDeadlines();
         renderSelectedDeadlines();
     }
 });
+
+// Auto-save when textarea content changes
+let saveTimeout;
+tomorrowPlanTextarea.addEventListener('input', () => {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(async () => {
+        await autoSaveDayPlan();
+    }, 1000); // Save after 1 second of no typing
+});
+
+// Confirm delete with swipe
+window.confirmDeleteDeadline = async function(id) {
+    if (confirm('Are you sure you want to delete this deadline?')) {
+        await deleteDeadline(id);
+    }
+};
+
+// Mark deadline as complete from day plan
+window.markDeadlineComplete = async function(deadlineId) {
+    if (confirm('Mark this deadline as complete?')) {
+        // Remove from day plan
+        const index = selectedDeadlineIds.indexOf(deadlineId);
+        if (index !== -1) {
+            selectedDeadlineIds.splice(index, 1);
+            await autoSaveDayPlan();
+            renderAvailableDeadlines();
+            renderSelectedDeadlines();
+        }
+    }
+};
+
+// Check if device has touch support
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0) ||
+            (navigator.msMaxTouchPoints > 0));
+}
+
+// Initialize swipe handlers after rendering (only for touch devices)
+function initSwipeHandlers() {
+    // Only enable swipe on touch devices
+    if (!isTouchDevice()) {
+        return;
+    }
+
+    const swipeableCards = document.querySelectorAll('.swipeable');
+
+    swipeableCards.forEach(card => {
+        let startX = 0;
+        let currentX = 0;
+        let isSwiping = false;
+
+        card.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isSwiping = true;
+        }, { passive: true });
+
+        card.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            currentX = e.touches[0].clientX;
+            const diff = startX - currentX;
+
+            if (diff > 0 && diff < 100) {
+                card.style.transform = `translateX(-${diff}px)`;
+            }
+        }, { passive: true });
+
+        card.addEventListener('touchend', () => {
+            if (!isSwiping) return;
+            const diff = startX - currentX;
+
+            if (diff > 50) {
+                card.classList.add('swiped-left');
+            } else {
+                card.style.transform = '';
+            }
+
+            isSwiping = false;
+        });
+
+        // Click anywhere else to close swipe
+        document.addEventListener('click', (e) => {
+            if (!card.contains(e.target) && !e.target.classList.contains('swipe-action') && !e.target.classList.contains('swipe-action-complete')) {
+                card.classList.remove('swiped-left');
+                card.style.transform = '';
+            }
+        });
+    });
+}
 
 // Utility Functions
 function formatTime(time24) {

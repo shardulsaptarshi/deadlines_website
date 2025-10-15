@@ -234,7 +234,41 @@ header h1 {
     border: 1px solid var(--border-color);
     transition: all 0.2s ease;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
+}
+
+.deadline-card.swipeable {
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+}
+
+.deadline-card.swiped-left {
+    transform: translateX(-80px);
+}
+
+.swipe-action {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    display: none; /* Hidden by default on desktop */
+    align-items: center;
+    justify-content: center;
+    background: var(--danger-color);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 0 14px 14px 0;
+    cursor: pointer;
+    z-index: 0;
+}
+
+/* Only show swipe actions on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .swipe-action {
+        display: flex;
+    }
 }
 
 .deadline-card:hover {
@@ -435,6 +469,43 @@ header h1 {
     border-radius: 8px;
     border-left: 3px solid var(--primary-color);
     font-size: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+}
+
+.selected-deadline-item.swipeable {
+    transition: transform 0.3s ease;
+}
+
+.selected-deadline-item.swiped-left {
+    transform: translateX(-80px);
+}
+
+.swipe-action-complete {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    display: none; /* Hidden by default on desktop */
+    align-items: center;
+    justify-content: center;
+    background: var(--success-color);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    z-index: 0;
+}
+
+/* Only show swipe complete action on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .swipe-action-complete {
+        display: flex;
+    }
 }
 
 .selected-deadline-item.overdue {
